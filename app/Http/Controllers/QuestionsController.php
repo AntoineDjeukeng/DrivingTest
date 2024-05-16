@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
+
+use function Illuminate\Events\queueable;
+
+
 class QuestionsController extends Controller
 {
     /**
@@ -16,20 +20,14 @@ class QuestionsController extends Controller
     
     public function index(Request $request)
     {
-        $questions = [];
-        $types = Questions::distinct('type')->pluck('type');
-        foreach ($types as $type) {
-            $question = Questions::where('type', $type)->first();
-            if ($question) {
-                $questions[] = $question;
-            }
-        }
+        // dd($request->all());
+        
         $time = time();
-        // dd($time);
         return view('questions.index'
         , [
-            'questions' => $questions,'time' => $time,
-            // 'questions' => Questions::latest()->filter(['search' => request('search')])->simplePaginate(10)->withQueryString(),
+            'questions' => Questions::latest()->filter(['search' => request('search')])->simplePaginate(10)->withQueryString(),
+            // dd(request('search')),
+            'time' => $time,
         ]);
     }
 
@@ -38,7 +36,7 @@ class QuestionsController extends Controller
      */
     public function create()
     {
-        // return view('questions.create'
+        
         return view('questions.create' ,['sections' => Sections::all(),]
     );
     }
@@ -52,69 +50,42 @@ class QuestionsController extends Controller
         // dd($request->all());
 
 
-        // $formFields= $request->validate([
-        //      'law' => 'nullable',
-        //      'code' => 'nullable',
-        //      'section_id' => 'required',
-        //      'question' => 'required',
-        //      'answer' => 'required',
-        //      'a' => 'required',
-        //      'b' => 'required',
-        //      'c' => 'nullable',
-        //      'image' => 'nullable',
-        //      'Toption' => 'required'
-        //  ]);
+        $formFields= $request->validate([
+             'law' => 'nullable',
+             'code' => 'nullable',
+             'section_id' => 'required',
+             'question' => 'required',
+             'answer' => 'required',
+             'image' => 'nullable',
+             'Toption' => 'required'
+         ]);
      
-
-        //  $opImg = $request->file('a') ? 1 : 0;
-        //  $nq = !empty($request->c) ? 1 : 0;
-        //  $img = !empty($request->file('image')) ? 1 : 0;
-        // //  dd($formFields, $opImg, $nq, $img);
-        //  if ($request->Toption == 0 && ($opImg && $img )) {
-        //      return back()->with('error', "Images can't options if the question as image")->withInput();
-        //  }
-         
-     
-        //  // Determine the type based on file inputs
-        //  if ($opImg == 0 && $nq == 0 && $img == 0) {
-        //      $type = 1;
-        //  } elseif ($opImg == 0 && $nq == 1 && $img == 0) {
-        //      $type = 2;
-        //  } elseif ($opImg == 0 && $nq == 0 && $img == 1) {
-        //     $request->validate([
-        //         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //     ]);
-        //     $image = $request->file('image');
-        //     $formFields['image'] =  $image->store('images', 'public');
-        //     $type = 4;
-        //  } elseif ($opImg == 0 && $nq == 1 && $img == 1) {
-        //     $request->validate([
-        //         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //     ]);
-        //     $image = $request->file('image');
-        //     $formFields['image'] =  $image->store('images', 'public');            
-        //     $type = 5;
-        //  } elseif ($opImg == 1 && $nq == 1 && $img == 0) {
-        //     $request->validate([
-        //         'a' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //         'b' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //         'c' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //     ]);
-        //     $a = $request->file('a');
-        //     $b = $request->file('b');
-        //     $c = $request->file('c');
-        //     $formFields['a'] =  $a->store('images', 'public');
-        //     $formFields['b'] =  $b->store('images', 'public');
-        //     $formFields['c'] =  $c->store('images', 'public');
-        //      $type = 3;
-        //  }
-     
-        //  // Prepare form fields for storing
-        // //  $formFields = $request->only(['law', 'code', 'section_id', 'question', 'answer', 'a', 'b', 'c', 'image']);
-        //  $formFields['type'] = $type;
-        // //  dd($formFields);
-        //  // Store the data
-        //  $questions->create($formFields);
+         if($request->text_a==null){
+            $request->validate([
+                'image_a' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image_b' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image_c' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+             $formFields['a']=$request->file('image_a')->store('images', 'public');
+             $formFields['b']=$request->file('image_b')->store('images', 'public');
+             $formFields['c']=$request->file('image_c')->store('images', 'public');
+         }
+            else{
+                $formFields['a']=$request->text_a;
+                $formFields['b']=$request->text_b;
+                $formFields['c']=$request->text_c;
+            }
+            if($request->file('image')){
+                $request->validate([
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+                $formFields['image'] =  $request->file('image')->store('images', 'public');
+            }
+            $type=$request->Toption;
+        
+         $formFields['type'] = $type;
+        
+         $questions->create($formFields);
      
          return redirect()->route('questions.index')->with('success', 'Question created successfully.');
      }
@@ -126,38 +97,28 @@ class QuestionsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Questions $questions, Request $request)
+    public function show(Questions $question, Request $request)
     {
-        // dd($request, $questions);
-        return view('questions.show');
+        $section = Sections::where('id', $question->section_id)->first();
+        return view('questions.show', [
+            'question' => $question,
+            'section' => $section
+        ]); 
 
 
 
-        // return view('questions.show', [
-        //     'question' => $questions,
-        // ]);
+        
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Questions $questions)
+    public function edit(Questions $question)
     {   
-        $questions = [];
-        $types = Questions::distinct('type')->pluck('type');
-        foreach ($types as $type) {
-            $question = Questions::where('type', $type)->first();
-            if ($question) {
-                $questions[] = $question;
-            }
-        }
-        // return view('questions.edit'
-        // , [
-        //     'questions' => $questions,
-        //     // 'questions' => Questions::latest()->filter(['search' => request('search')])->simplePaginate(10)->withQueryString(),
-        // ]);
+        // dd($question->section_id);
+        
         return view('questions.edit', [
-            'question' => $questions,
+            'question' => $question,
             'sections' => Sections::all(),
         ]);
     }
@@ -167,103 +128,75 @@ class QuestionsController extends Controller
 
 
 
-    // public function update(Request $request, Questions $questions)
-    // {
-       
-    //     $formFields = $request->validate([
-    //         'law' => 'nullable',
-    //         'code' => 'nullable',
-    //         'section_id' => 'nullable', // Change to nullable
-    //         'question' => 'nullable', // Change to nullable
-    //         'answer' => 'nullable', // Change to nullable
-    //         'a' => 'nullable', // Change to nullable
-    //         'b' => 'nullable', // Change to nullable
-    //         'c' => 'nullable',
-    //         'image' => 'nullable',
-    //         'Toption' => 'required'
-    //     ]);
-    //     // dd($request->all(), $formFields);
-    //     if ($questions->image) {
-    //         if (!array_key_exists('image', $formFields) ) {
-    //             $formFields['image'] = $questions->image;
-    //         } else {
-    //             $request->validate([
-    //                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //             ]);
-    //             $image = $request->file('image');
-    //             $formFields['image'] =  $image->store('images', 'public');
-    //         } 
-    //         $img =  1;
-    //     } else {
-    //         $img = 0;
-    //     }
-    //     if (!empty($request->c)) {
-    //         if($request->file('a')){
-    //             $request->validate([
-    //                 'a' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //                 'b' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //                 'c' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //             ]);
-    //             $a = $request->file('a');
-    //             $b = $request->file('b');
-    //             $c = $request->file('c');
-    //             $formFields['a'] =  $a->store('images', 'public');
-    //             $formFields['b'] =  $b->store('images', 'public');
-    //             $formFields['c'] =  $c->store('images', 'public');
-    //             $opImg = 1;
-    //         } else {
-    //             $opImg = 0;
-    //         }
-    //         // dd(Storage::disk('public')->exists($formFields['c']), $opImg );
+    public function update(Request $request, Questions $question)
+    {
+    //    dd($request->all(), $question);
+        $formFields = $request->validate([
+            'law' => 'nullable',
+            'code' => 'nullable',
+            'section_id' => 'nullable', // Change to nullable
+            'question' => 'nullable', // Change to nullable
+            'answer' => 'nullable', // Change to nullable
+            'image' => 'nullable',
+            'Toption' => 'nullable',
+        ]);
+        
+        if ($question->image and !array_key_exists('image', $formFields)) {
+            $formFields['image'] = $question->image;             
+        }else{
+            if ($request->file('image')){
+                $request->validate([
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+                $image = $request->file('image');
+                $formFields['image'] =  $image->store('images', 'public');
+            }
+        } 
+        if ($request->text_a==null){
+            $imageFields = ['image_a', 'image_b', 'image_c'];
 
-    //         $nq = 1;
-    //     } else {
-
-    //         if(Storage::disk('public')->exists($questions->c)) {
-    //             $formFields['a'] = $questions->a;
-    //             $formFields['b'] = $questions->b;
-    //             $formFields['c'] = $questions->c;
-                
-    //             $opImg = 1;
-    //             $nq = 1;
-    //         } else {
-    //             $opImg = 0;
-    //             $nq = 0;
-    //         }
-    //     }
+            foreach ($imageFields as $field) {
+                // Check if the image field exists in the request
+                if ($request->hasFile($field)) {
+                    // Validate the image
+                    $request->validate([
+                        $field => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                    ]);
+            
+                    // Store the image
+                    $formFields[$field[6]] = $request->file($field)->store('images', 'public');
+                } else {
+                    // Use the existing value if the image is not updated
+                    $formFields[$field[6]] = $question->{$field[6]};
+                }
+            }  
+              
+        } else {
+            $formFields['a'] = $request->text_a;
+            $formFields['b'] = $request->text_b;
+            $formFields['c'] = $request->text_c;
+        }
 
 
-    //     if ($request->Toption == 0 && (($opImg && $img ) )) {
-    //         return back()->with('error', "Images can't options if the question as image")->withInput();
-    //     }
 
-    //     if ($opImg == 0 && $nq == 0 && $img == 0) {
-    //         $type = 1;
-    //     } elseif ($opImg == 0 && $nq == 1 && $img == 0) {
-    //         $type = 2;
-    //     } elseif ($opImg == 0 && $nq == 0 && $img == 1) {
-    //        $type = 4;
-    //     } elseif ($opImg == 0 && $nq == 1 && $img == 1) {           
-    //        $type = 5;
-    //     } elseif ($opImg == 1 && $nq == 1 && $img == 0) {
-    //         $type = 3;
-    //     }
-    //     $formFields['type'] = $type;
+        // dd($request->all(), $formFields, $question);
+
+        $formFields['type'] = $question->type;
     
-    //     $questions->update($formFields);
-    //     return redirect()->route('questions.show', $questions)->with('message', 'Question Updated!');
-    // }
+        $question->update($formFields);
+        return redirect()->route('questions.show', $question)->with('message', 'Question Updated!');
+    }
 
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Questions $questions)
+    public function destroy(Questions $question)
     {   
-        dd($questions);
-        $id = $questions->id;
-        $questions->delete();
+        // dd($questions);
+        $id = $question->id;
+        $question->delete();
         return redirect()->route('questions.index')->with('message', 'Question ' . $id . ' Deleted!');
     }
 }

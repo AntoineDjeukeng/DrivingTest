@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ProviderController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\QuestionsController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\QuizController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -19,6 +20,7 @@ Route::get('/auth/{provider}/callback', [ProviderController::class, 'callback'])
 Route::middleware(['auth','verified'])->group(function ( ){
     Route::resource('sections', SectionsController::class);
     Route::resource('questions', QuestionsController::class);
+    Route::resource('quiz', QuizController::class);
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');

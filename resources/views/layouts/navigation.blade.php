@@ -7,35 +7,36 @@
                 <!-- Logo -->
 
                 <div class="logo">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('welcome') }}">
                         <span>a</span>dm
                     </a>
                 </div>
 
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboards') }}
-                    </x-nav-link>
-                </div>
-                <!-- Navigation Links -->
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('questions.index')" :active="request()->routeIs('questions.index')">
                         {{ __('Questions') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('questions.edit', 1)" :active="request()->routeIs('questions.edit')">
+                    <x-nav-link :href="route('questions.create')" :active="request()->routeIs('questions.create')">
+                        {{ __('Create') }}
+                    </x-nav-link>
+                    <x-nav-link :active="request()->routeIs('questions.edit')">
                         {{ __('Edit') }}
+                    </x-nav-link>
+                    <x-nav-link :active="request()->routeIs('questions.show')">
+                        {{ __('show') }}
                     </x-nav-link>
                 </div>
 
 
             </div>
             <div class="hidden  sm:flex sm:items-center space-x-8 sm:-my-px sm:ms-10" style="width: 30%">
-                <form action="/" method="GET" class="flex items-center p-2 w-full">
+                <form action="{{ route('questions.index') }}" method="GET" class="flex items-center p-2 w-full">
                     <label for="default-search" class="sr-only">Search</label>
                     <div class="relative w-full">
-                        <input type="search" id="default-search" name="query"
-                            class="block w-full p-2 text-sm border rounded-lg focus:ring focus:border-blue-500"
+                        <input type="search" id="default-search" name="search"
+                            class="block w-full p-2 text-black text-sm border rounded-lg focus:ring focus:border-blue-500"
                             placeholder="Search Mockups, Logos..." required />
                         <button type="submit"
                             class="absolute inset-y-0 right-0 px-4 text-white bg-blue-700 rounded-lg">Search</button>
@@ -43,36 +44,7 @@
                 </form>
             </div>
 
-            {{-- <div class="anv-bar">
-                <div class="logo">
-                    <a href="#"><span>a</span>dm</a>
-                </div>
-                <div class="nav-left ">
-    
-                    <div class="user">
-                        welcome, <span>Admin</span>
-    
-                    </div>
-                </div>
-                <div class="nav-midel">
-                    <div class="search">
-                        <input type="text" placeholder="Search">
-                        <button><i class="fa fa-search"></i></button>
-                    </div>
-                </div>
-                <div class=" nav-right">
-                    <!--About-->
-                    <div class="nav-item lef"><a href="#"><i class="fa fa-user"></i> <span>Profile</span></a></div>
-                    <div class="nav-item lef"><a href="#"><i class="fa fa-info-circle"></i> <span>About</span></a>
-                    </div>
-                    <div class="nav-item lef"><a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a></div>
-                    <div class="nav-item lef"><a href="#"><i class="fa fa-sign-out-alt"></i> <span>Logout</span></a>
-                    </div>
-    
-                </div>
-    
-            </div> --}}
-            <!-- Settings Dropdown -->
+
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">

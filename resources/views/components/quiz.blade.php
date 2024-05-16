@@ -1,4 +1,4 @@
-<div class="text-gray-900 dark:text-gray-100 text-2xl group  relative m-3 p-2 border-4 border-black  rounded-xl ">
+<div class="text-gray-900 dark:text-gray-100 text-2xl group  relative m-3 p-5 border-4 border-black  rounded-xl ">
 
 
     @if ($manege ?? false)
@@ -40,6 +40,6 @@
             <img src="{{ asset('storage/' . $question->image) }}" alt="image" class=" rounded-md">
         </div>
     @endif
-    <x-question-card :question="$question" class="" />
+    <x-quiz-card :question="$question" class="" />
 
 </div>

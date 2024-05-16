@@ -913,7 +913,7 @@
                 @if (Route::has('login'))
                     <nav class="-mx-3 flex flex-1 justify-end gap-3">
                         @auth
-                            <a href="{{ url('/dashboard') }}"
+                            <a href="{{ route('questions.index') }}"
                                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
                                 Dashboard
                             </a>
@@ -936,11 +936,11 @@
         </div>
         <div class="absolute top-1/4 rounded-xl bg-black  left-1/2 border p-4">
             <!-- Content positioned at bottom right corner -->
-            <p class=" text-white">Text at bottom right corner</p>
+            <a href="{{ route('questions.index') }}" class=" text-white">See the list of question</>
         </div>
         <div class="absolute bottom-10 rounded-xl bg-black right-20 border p-4">
             <!-- Content positioned at bottom right corner -->
-            <p class="text-white">Text at bottom right corner</p>
+            <a href="{{ route('quiz.index') }}" class=" text-white">Test your knowledge</>
         </div>
     </div>
 

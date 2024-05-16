@@ -1,150 +1,152 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2> --}}
-        <div class="row justify-content-center mx-2 bg-secondary position-fixed">
-            <div class="col-auto p-2">
-                <div id="minutes" class="text-center text-white h2"></div>
+        <div class="flex justify-center items-center gap-4 z-10">
+            <div class="">
+                <a href="{{ route('quiz.create') }}"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start the
+                    Quiz</a>
             </div>
-            <div class="col-auto p-2">
-                <div id="seconds" class="text-center text-white h2"></div>
+            <div class="">
+                <a href="" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">See your
+                    performance</a>
             </div>
         </div>
     </x-slot>
+    <div class="py-12 mt-28">
+        <div class=" mx-auto text-s mt-2 sm:px-2 lg:px-4">
+            <div class="   shadow-sm sm:rounded-lg border">
 
-    <div class="py-12 ">
-        <div class=" mx-auto sm:px-2 lg:px-4">
-            <div
-                class="  dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border grid grid-flow-row-dense grid-cols-3">
+                <div class="row m-5">
+                    A test is composed from 25 questions (by a computer, so each test is an original), each one has only
+                    one correct answer (mostly from three - a,b,c; sometimes from two - a,b). A component question has
+                    matched specific number of points. Maximum available number of points is 50. Minimum for succesfull
+                    exam is 43 points.
+                    You must make an exam with a court (official, authorized...) translator (interpreter). You can bring
+                    (use a servis of) your known translator (if you know anybody). Or you can use a servis of one of
+                    them I know. You need to negotiate his fee with him, it isn't a part of a price of a driving school.
+                    He mustn't help you. You must know rules, principles, signs, crossroads, first aid... yourself!
+                </div>
+                <div class="flex w-4/5 justify-around p-3 border m-6 rounded-md">
+                    <table class="w-full  text-left rtl:text-right ">
+                        <thead class="text-xl text-center border-b-2">
+                            <tr>
+                                <th scope="col" class="px-2 py-2 rounded-s-lg">
+                                    Index
+                                </th>
+                                <th scope="col" class="px-2 py-2">
+                                    Description
+                                </th>
+                                <th scope="col" class="px-2 py-2 rounded-e-lg">
+                                    Points
+                                </th>
+                                <th scope="col" class="px-2 py-2 rounded-e-lg">
+                                    Number of questions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($sections as $section)
+                                <tr class=" ">
+                                    <td class="p-1  text-wrap  ">
+                                        {{ $section->id }}
+                                    </td>
+                                    <td class="p-1  ">
+                                        {{ $section->name }}
+                                    </td>
+                                    <td class="p-1 text-center ">
+                                        {{ $section->grade }}
+                                    </td>
+                                    <td class="p-1 text-center ">
+                                        {{ $section->number }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                @foreach ($questions as $question)
-                    <x-question :question="$question" :manege="true" />
-                @endforeach
+
+                {{-- <form id="quizForm" method="post" action="{{ route('quiz.store') }}">
+
+                    @csrf
+                    @foreach ($sections as $section)
+                        <div class="flex flex-col gap-2 border">
+                            <div class="flex flex-row items-center">
+                                <input type="radio" id="a" name="{{ $section->id }}" value="a"
+                                    class="hidden">
+                                <label for="a" class="flex items-center cursor-pointer">
+                                    <!-- Font Awesome icon for unchecked state -->
+                                    <div class="ml-2 text-gray-500 base">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                    <!-- Font Awesome icon for checked state -->
+                                    <div class="ml-5 text-green-500 hidden selected">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div id="options" class="option">
+                                        {{ $section->id }}
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex flex-row items-center">
+                                <input type="radio" id="b" name="{{ $section->id }}" value="b"
+                                    class="hidden">
+                                <label for="b" class="flex items-center cursor-pointer">
+                                    <!-- Font Awesome icon for unchecked state -->
+                                    <div class="ml-2 text-gray-500 base">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                    <!-- Font Awesome icon for checked state -->
+                                    <div class="ml-5 text-green-500 hidden selected">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div id="options" class="option">
+                                        {{ $section->id }}
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex flex-row items-center">
+                                <input type="radio" id="c" name="{{ $section->id }}" value="c"
+                                    class="hidden">
+                                <label for="c" class="flex items-center cursor-pointer">
+                                    <!-- Font Awesome icon for unchecked state -->
+                                    <div class="ml-2 text-gray-500 base">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                    <!-- Font Awesome icon for checked state -->
+                                    <div class="ml-5 text-green-500 hidden selected">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div id="options" class="option">
+                                        {{ $section->id }}
+                                    </div>
+                                </label>
+                            </div>
+
+
+                        </div>
+                    @endforeach
+
+
+
+
+
+                    <button id="submitBtn" type="submit" class="btn btn-primary">Submit Answers</button>
+                </form> --}}
+
+
+
+                <div class="row m-5">
+                    There is possible to mark an answer (you think it's correct) either with the mouse on the
+                    corresponding letter or with the corresponding key on the keyboard during the test. The test is
+                    limited by time limit 30 minutes. Be careful with pressing a key "Enter", it can finish a test too
+                    early.
+
+                </div>
+
             </div>
         </div>
-        <div class=" mx-auto sm:px-2 lg:px-4">
-            <div class="py-4">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Section Title</h3>
-            </div>
-            <div
-                class="  dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border grid grid-flow-row-dense grid-cols-3">
-
-                @foreach ($questions as $question)
-                    <x-question :question="$question" />
-                @endforeach
-            </div>
-        </div>
-
     </div>
-    {{-- <div class="container form-check mb-5">
-        <form id="quizForm" method="post" action=" {{ route('quiz.submit') }}">
-
-            @csrf 
-            @php
-                $n = 0;
-            @endphp
-            @foreach ($questions as $question)
-                @php
-                    $n++;
-                @endphp
 
 
-                
-                <input type="hidden" name="answers[{{ $question['id'] }}]" value="">
-                <x-quiz-card :question="$question" :n="$n" />
-            @endforeach
-            <div class="row justify-content-between mx-2 position-fixed"
-                style="bottom: 60px; right: 20px; left: 20px;">
-                <div class="col-auto">
-                    <a href=" {{ route('quiz.stop') }}" class="btn btn-danger" role="button">End the Quiz</a>
-                </div>
-                <div class="col-auto">
-                    <button id="submitBtnRight" type="submit" class="btn btn-primary">Submit Answers</button>
-                </div>
-            </div>
-
-        </form>
-    </div> --}}
-
-    {{-- <script>
-        // Set the countdown duration in minutes
-        const countdownDuration = 35;
-
-        // Calculate the end time by adding the duration to the current time
-        const endTime = new Date();
-        endTime.setMinutes(endTime.getMinutes() + countdownDuration);
-
-        // Update the countdown every second
-        const countdownTimer = setInterval(updateCountdown, 1000);
-
-        function updateCountdown() {
-            // Get the current time
-            const currentTime = new Date();
-
-            // Calculate the remaining time in seconds
-            const remainingTime = Math.floor((endTime - currentTime) / 1000);
-
-            // Check if the countdown has ended
-            if (remainingTime <= 0) {
-                clearInterval(countdownTimer);
-                // Perform any actions when the countdown ends
-                // For example, redirect to another page or show a message
-                // window.location.href = "https://example.com";
-                // alert("Countdown has ended!");
-                return;
-            }
-
-            // Calculate the remaining minutes and seconds
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = remainingTime % 60;
-
-            // Display the remaining time in the page
-            document.getElementById("countdown").textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-        }
-    </script> --}}
-    <script>
-        var currentDate = parseInt("{{ $time }}") * 1000; // Convert seconds to milliseconds
-
-        // Calculate the target time by adding 25 minutes (in milliseconds)
-        var targetTime = currentDate + (25 * 60 * 1000); // 25 minutes
-
-        // Call updateCountdown function every second
-        var countdown = setInterval(updateCountdown, 1000);
-
-        function updateCountdown() {
-            // Get the current date and time
-            var currentTime = new Date().getTime();
-
-            // Calculate the difference between target time and current time
-            var diff = targetTime - currentTime;
-
-            // Check if the countdown has reached zero
-            if (diff <= 0) {
-                // Display "Time's up!" or take appropriate action
-                clearInterval(countdown);
-                document.getElementById('minutes').innerHTML = "Time's up!";
-                document.getElementById('seconds').innerHTML = "";
-
-                // Automatically submit the form when time is up
-                document.getElementById('quizForm').submit();
-                return;
-            }
-
-            // Calculate minutes and seconds
-            var m = Math.floor(diff / (1000 * 60)) % 60;
-            var s = Math.floor(diff / 1000) % 60;
-
-            // Get the elements for minutes and seconds
-            var minutesElement = document.getElementById('minutes');
-            var secondsElement = document.getElementById('seconds');
-
-            // Check if the elements exist before updating
-            if (minutesElement && secondsElement) {
-                // Update the content of minutes and seconds
-                minutesElement.innerHTML = m;
-                secondsElement.innerHTML = s;
-            }
-        }
-    </script>
 </x-app-layout>

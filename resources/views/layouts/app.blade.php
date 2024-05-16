@@ -36,7 +36,7 @@
 
         </div>
         <!-- Page Content -->
-        <main class=" mt-28">
+        <main class=" mt-10">
             {{ $slot }}
         </main>
     </div>
@@ -73,10 +73,10 @@
             this.isOpen = !this.isOpen;
 
             if (this.isOpen) {
-                // Automatically close the style switcher after 15 seconds
+
                 setTimeout(() => {
                     this.isOpen = false;
-                }, 15000); // 15 seconds
+                }, 15000);
             }
         }
         const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -102,7 +102,7 @@
 
 
 
-    // {{-- <script src="/js/style-switcher.js" crossorigin="anonymous"></script> --}}
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.1.0/typed.umd.js"
